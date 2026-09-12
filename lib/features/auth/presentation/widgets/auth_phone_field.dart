@@ -43,6 +43,7 @@ class AuthPhoneField extends StatelessWidget {
           maxLength: 10,
           style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.w600),
           decoration: InputDecoration(
+            counterText: '',
             hintText: hintText,
             hintStyle: const TextStyle(color: AppColors.textDisabled),
             filled: true,

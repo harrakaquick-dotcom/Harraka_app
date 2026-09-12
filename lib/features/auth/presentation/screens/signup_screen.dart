@@ -106,6 +106,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           }
                         },
                       ),
+                      const SizedBox(height: AppSpacing.md),
                       AuthText(
                         helperText: 'Already have an account? ',
                         text: 'Log in',
