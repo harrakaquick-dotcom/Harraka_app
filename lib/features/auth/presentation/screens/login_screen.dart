@@ -19,6 +19,13 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
+  final _phoneController = TextEditingController();
+
+  @override
+  void dispose() {
+    _phoneController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,6 +85,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       spacing: AppSpacing.lg,
                       children: [
                         AuthPhoneField(
+                          controller: _phoneController,
                           labelText: 'Mobile Number',
                           validator: NumberValidator.validate,
                         ),
@@ -85,7 +93,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           label: 'Continue',
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              Navigator.of(context).pushNamed(RouteNames.home);
+                              Navigator.of(context).pushNamed(
+                                RouteNames.otpVerification,
+                                arguments: _phoneController.text.trim(),
+                              );
                             }
                           },
                         ),

@@ -26,7 +26,7 @@ class AuthText extends StatelessWidget {
             minimumSize: Size.zero,
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
           ),
-          onPressed: () => Navigator.of(context).pushNamed(routeName),
+          onPressed: () => Navigator.of(context).pushReplacementNamed(routeName),
           child: Text(
             text,
             style: AppTextStyles.bodyMedium.copyWith(

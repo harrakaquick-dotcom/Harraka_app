@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:harraka/core/widgets/app_Gradient_button.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_text_styles.dart';
@@ -45,31 +44,9 @@ class SplashScreen extends StatelessWidget {
               AppGradientButton(
                 label: 'Get Started',
                 onPressed: () =>
-                    Navigator.of(context).pushNamed(RouteNames.signup),
+                    Navigator.of(context).pushReplacementNamed(RouteNames.onboarding),
               ),
               const SizedBox(height: AppSpacing.md),
-          //     Row(
-          //       spacing: 0,
-          //       mainAxisAlignment: MainAxisAlignment.center,
-          //       children: [
-          //         Text(
-          //           'Already have an account? ',
-          //           style: AppTextStyles.bodyMedium,
-          //         ),
-          //         TextButton(
-          //           child: Text(
-          //             'Log in',
-          //             style: AppTextStyles.bodyMedium.copyWith(
-          //               color: AppColors.primary,
-          //               fontWeight: FontWeight.w600,
-          //             ),
-          //           ),
-          //           onPressed: () =>
-          //               Navigator.of(context).pushNamed(RouteNames.login),
-          //         ),
-          //       ],
-          //     ),
-          //     const SizedBox(height: AppSpacing.lg),
             ],
           ),
         ),

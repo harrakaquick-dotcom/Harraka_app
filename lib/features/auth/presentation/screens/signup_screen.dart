@@ -20,13 +20,23 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen> {
   final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _emailController = TextEditingController();
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _phoneController.dispose();
+    _emailController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        appBar: AppBar(title: Text('Create your account')),
         backgroundColor: AppColors.background,
         body: SafeArea(
           child: Form(
@@ -64,15 +74,20 @@ class _SignupScreenState extends State<SignupScreen> {
                         ),
                         const SizedBox(height: AppSpacing.xl),
                         AppTextField(
+                          controller: _nameController,
                           labelText: 'Full Name',
                           hintText: 'Enter your full name',
                           validator: NameValidator.validate,
                           // prefixIcon: Icons.person_outline,
                         ),
                         const SizedBox(height: AppSpacing.md),
-                        AuthPhoneField(validator: NumberValidator.validate),
+                        AuthPhoneField(
+                          controller: _phoneController,
+                          validator: NumberValidator.validate,
+                        ),
                         const SizedBox(height: AppSpacing.md),
                         AppTextField(
+                          controller: _emailController,
                           labelText: 'Email Address',
                           hintText: 'example@gmail.com',
                           keyboardType: TextInputType.emailAddress,
@@ -102,7 +117,10 @@ class _SignupScreenState extends State<SignupScreen> {
                         label: 'Create Account',
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            Navigator.of(context).pushNamed(RouteNames.home);
+                            Navigator.of(context).pushNamed(
+                              RouteNames.otpVerification,
+                              arguments: _phoneController.text.trim(),
+                            );
                           }
                         },
                       ),
