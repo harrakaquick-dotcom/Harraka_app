@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:harraka/core/widgets/app_Gradient_button.dart';
 import '../constants/app_colors.dart';
 import '../constants/app_spacing.dart';
 import '../constants/app_text_styles.dart';
-import 'app_button.dart';
+import 'app_Gradient_button.dart';
 
 class EmptyState extends StatelessWidget {
   const EmptyState({
@@ -37,7 +38,7 @@ class EmptyState extends StatelessWidget {
             ],
             if (actionLabel != null && onAction != null) ...[
               const SizedBox(height: AppSpacing.lg),
-              AppButton(label: actionLabel!, onPressed: onAction, expand: false),
+              AppGradientButton(label: actionLabel!, onPressed: onAction, expand: false),
             ],
           ],
         ),
