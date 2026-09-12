@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:harraka/features/auth/presentation/screens/signup_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/otp_screen.dart';
+import '../../features/addresses/presentation/screens/select_address_screen.dart';
 import '../../features/onboarding/presentation/screens/onboarding_screen.dart';
 import '../../features/splash/presentation/screens/splash_screen.dart';
 import 'route_names.dart';
@@ -24,6 +25,8 @@ class AppRouter {
       case RouteNames.otpVerification:
         final phoneNumber = settings.arguments as String? ?? '';
         return MaterialPageRoute(builder: (_) => OtpScreen(phoneNumber: phoneNumber));
+      case RouteNames.addresses:
+        return MaterialPageRoute(builder: (_) => const SelectAddressScreen());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

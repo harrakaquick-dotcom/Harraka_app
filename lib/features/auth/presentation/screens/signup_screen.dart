@@ -77,7 +77,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           controller: _nameController,
                           labelText: 'Full Name',
                           hintText: 'Enter your full name',
-                          validator: NameValidator.validate,
+                         validator: NameValidator.validate,
                           // prefixIcon: Icons.person_outline,
                         ),
                         const SizedBox(height: AppSpacing.md),
