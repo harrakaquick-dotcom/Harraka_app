@@ -3,7 +3,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_text_styles.dart';
 import '../../../../core/routing/route_names.dart';
-import '../../../../core/widgets/app_button.dart';
+import '../../../../core/widgets/app_Gradient_button.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
@@ -22,41 +22,31 @@ class SplashScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(AppRadius.large),
                 child: Image.asset(
                   'assets/icons/harraka_app_icon.png',
-                  height: 160,
-                  width: 160,
+                  height: 100,
+                  width: 100,
                 ),
               ),
-              const Spacer(flex: 2),
+              const SizedBox(height: 30),
+              Text(
+                'Harraka',
+                textAlign: TextAlign.center,
+                style: AppTextStyles.displayLarge.copyWith(
+                  color: AppColors.primary,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
               Text(
                 'Groceries at your door\nin 10 minutes',
                 textAlign: TextAlign.center,
-                style: AppTextStyles.displayLarge,
+                style: AppTextStyles.bodyLarge,
               ),
               const Spacer(flex: 3),
-              AppButton(
+              AppGradientButton(
                 label: 'Get Started',
-                onPressed: () => Navigator.of(context).pushNamed(RouteNames.login),
+                onPressed: () =>
+                    Navigator.of(context).pushReplacementNamed(RouteNames.onboarding),
               ),
               const SizedBox(height: AppSpacing.md),
-              TextButton(
-                onPressed: () => Navigator.of(context).pushNamed(RouteNames.login),
-                child: Text.rich(
-                  TextSpan(
-                    text: 'Already have an account? ',
-                    style: AppTextStyles.bodyMedium,
-                    children: [
-                      TextSpan(
-                        text: 'Log in',
-                        style: AppTextStyles.bodyMedium.copyWith(
-                          color: AppColors.primary,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: AppSpacing.lg),
             ],
           ),
         ),

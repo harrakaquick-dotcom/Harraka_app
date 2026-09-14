@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:harraka/features/auth/presentation/screens/signup_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
+import '../../features/auth/presentation/screens/otp_screen.dart';
+import '../../features/onboarding/presentation/screens/onboarding_screen.dart';
 import '../../features/splash/presentation/screens/splash_screen.dart';
 import 'route_names.dart';
 
@@ -12,8 +15,15 @@ class AppRouter {
     switch (settings.name) {
       case RouteNames.splash:
         return MaterialPageRoute(builder: (_) => const SplashScreen());
+      case RouteNames.onboarding:
+        return MaterialPageRoute(builder: (_) => const OnboardingScreen());
       case RouteNames.login:
         return MaterialPageRoute(builder: (_) => const LoginScreen());
+      case RouteNames.signup:
+        return MaterialPageRoute(builder: (_)=> const SignupScreen());
+      case RouteNames.otpVerification:
+        final phoneNumber = settings.arguments as String? ?? '';
+        return MaterialPageRoute(builder: (_) => OtpScreen(phoneNumber: phoneNumber));
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

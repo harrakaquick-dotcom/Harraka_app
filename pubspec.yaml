@@ -47,6 +47,9 @@ dependencies:
   # Currency/date/distance formatting
   intl: ^0.20.2
 
+  # Onboarding page indicator
+  smooth_page_indicator: ^1.2.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -248,6 +251,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
+    - assets/images/splash/
     - assets/icons/
     - assets/lottie/
 
