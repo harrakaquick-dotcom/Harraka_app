@@ -164,7 +164,7 @@ class _SelectAddressScreenState extends State<SelectAddressScreen> {
                       ),
                     ),
                     const SizedBox(height: AppSpacing.sm),
-                    InkWell(
+                     InkWell(
                       onTap: () {
                         // TODO: navigate to a full "add new address" form.
                       },

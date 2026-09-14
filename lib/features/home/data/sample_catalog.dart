@@ -1,0 +1,73 @@
+import '../domain/entities/product.dart';
+
+/// Static sample catalog — stand-in until a real product API is wired up.
+const sampleCatalog = [
+  Product(
+    id: 'p1',
+    name: 'Farm Fresh Milk, Toned',
+    pack: '500 ml pouch',
+    price: 29,
+    mrp: 34,
+    category: 'Dairy',
+    brand: 'Amul',
+    eta: '8 min',
+    isVeg: true,
+  ),
+  Product(
+    id: 'p2',
+    name: 'Alphonso Mangoes',
+    pack: '4 pcs, 800 g',
+    price: 249,
+    mrp: 320,
+    category: 'Fruits',
+    brand: 'Local Farm',
+    eta: '9 min',
+    isVeg: true,
+  ),
+  Product(
+    id: 'p3',
+    name: 'Brown Eggs, Free Range',
+    pack: '6 pcs',
+    price: 89,
+    mrp: 110,
+    category: 'Dairy',
+    brand: 'Eggoz',
+    eta: '9 min',
+    isVeg: false,
+  ),
+  Product(
+    id: 'p4',
+    name: 'Cold Brew Coffee Can',
+    pack: '200 ml',
+    price: 120,
+    mrp: 150,
+    category: 'Beverages',
+    brand: 'Sleepy Owl',
+    eta: '11 min',
+    isVeg: true,
+  ),
+  Product(
+    id: 'p5',
+    name: 'Whole Wheat Atta',
+    pack: '5 kg bag',
+    price: 279,
+    mrp: 340,
+    category: 'Staples',
+    brand: 'Aashirvaad',
+    eta: '12 min',
+    isVeg: true,
+  ),
+  Product(
+    id: 'p6',
+    name: 'Salted Potato Chips',
+    pack: '52 g',
+    price: 20,
+    mrp: 25,
+    category: 'Snacks',
+    brand: 'Lay Co',
+    eta: '8 min',
+    isVeg: true,
+  ),
+];
+
+Product productById(String id) => sampleCatalog.firstWhere((p) => p.id == id);
