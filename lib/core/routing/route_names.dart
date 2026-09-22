@@ -19,4 +19,5 @@ class RouteNames {
   static const String addresses = '/addresses';
   static const String walletOffers = '/wallet-offers';
   static const String notifications = '/notifications';
+  static const String support = '/support';
 }

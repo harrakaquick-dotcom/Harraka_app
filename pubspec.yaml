@@ -50,6 +50,10 @@ dependencies:
   # Onboarding page indicator
   smooth_page_indicator: ^1.2.1
 
+  # Address picker map
+  google_maps_flutter: ^2.10.0
+  geolocator: ^13.0.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

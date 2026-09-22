@@ -108,4 +108,82 @@ void main() {
       isNotNull,
     );
   });
+
+  testWidgets('Full flow: login through OTP and address selection reaches the home shell, '
+      'and shopping through to checkout works without rendering errors', (tester) async {
+    await tester.pumpWidget(const ProviderScope(child: HarrakaApp()));
+    await tester.pump();
+
+    await tester.tap(find.text('Get Started'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Skip'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Log in'));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byType(TextFormField), '9876543210');
+    await tester.tap(find.text('Continue'));
+    await tester.pumpAndSettle();
+
+    Future<void> tapDigit(String digit) async {
+      await tester.tap(find.widgetWithText(InkWell, digit));
+      await tester.pump();
+    }
+
+    await tapDigit('1');
+    await tapDigit('2');
+    await tapDigit('3');
+    await tapDigit('4');
+    await tester.tap(find.text('Verify & continue'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.textContaining('Home').first);
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+    expect(find.text('Fastest near you'), findsOneWidget);
+
+    // Add a product to the cart from the home grid and confirm the floating
+    // cart bar appears.
+    await tester.ensureVisible(find.text('ADD').first);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('ADD').first);
+    await tester.pump();
+    expect(find.textContaining('View cart'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+
+    // Cycle through every bottom-nav tab and make sure nothing throws.
+    for (final label in ['Categories', 'Search', 'Orders', 'Account', 'Home']) {
+      await tester.tap(find.text(label).last);
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+    }
+
+    // Open a product, add it to cart, and walk through cart -> payment ->
+    // order-placed -> tracking.
+    await tester.ensureVisible(find.text('Alphonso Mangoes').first);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Alphonso Mangoes').first);
+    await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull);
+
+    await tester.tap(find.text('Add to cart'));
+    await tester.pumpAndSettle();
+    expect(find.text('Your cart'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+
+    await tester.tap(find.text('Proceed to pay →'));
+    await tester.pumpAndSettle();
+    expect(find.text('Payment'), findsOneWidget);
+
+    await tester.tap(find.textContaining('Pay ₹'));
+    await tester.pumpAndSettle();
+    expect(find.text('Order placed'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+
+    await tester.tap(find.text('Track order →'));
+    await tester.pumpAndSettle();
+    expect(find.text('Rohit S. is on the way'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
 }

@@ -100,7 +100,7 @@ class _OtpScreenState extends State<OtpScreen> {
 
   void _verify() {
     if (!_isComplete) return;
-    Navigator.of(context).pushReplacementNamed(RouteNames.home);
+    Navigator.of(context).pushReplacementNamed(RouteNames.addresses);
   }
 
   String get _maskedPhone {
