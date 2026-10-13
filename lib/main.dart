@@ -1,7 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'app.dart';
+import 'package:harraka/bootstrap.dart';
+import 'package:harraka/config/env/dev.dart';
 
-void main() {
-  runApp(const ProviderScope(child: HarrakaApp()));
-}
+/// Dev entry point: `flutter run -t lib/main_dev.dart`.
+void main() => bootstrap(devConfig);

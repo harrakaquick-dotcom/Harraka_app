@@ -1,8 +1,12 @@
+import com.google.firebase.appdistribution.gradle.firebaseAppDistribution
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
+    id("com.google.gms.google-services")
+    id("com.google.firebase.appdistribution")
 }
 
 android {
@@ -35,6 +39,14 @@ android {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")
+
+            firebaseAppDistribution {
+                artifactType = "APK"
+                releaseNotes = "Testing build"
+                // TODO: replace with your team's tester group name from the
+                // Firebase console (App Distribution > Testers & Groups).
+                groups = "tester-before-production"
+            }
         }
     }
 }
