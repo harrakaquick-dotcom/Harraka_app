@@ -65,18 +65,16 @@ class _LoginScreenState extends State<LoginScreen> {
                           controller: _emailController,
                           validator: EmailValidator.validate,
                         ),
-                        Container(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            spacing: 10,
-                            children: [
-                              AuthText(
-                                helperText: "Continue with number  ",
-                                text: "Phone number",
-                                routeName: RouteNames.loginWithNumber,
-                              ),
-                            ],
-                          ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          spacing: 10,
+                          children: [
+                            AuthText(
+                              helperText: "Continue with number  ",
+                              text: "Phone number",
+                              routeName: RouteNames.loginWithNumber,
+                            ),
+                          ],
                         ),
                         AppGradientButton(
                           label: 'Continue',

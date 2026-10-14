@@ -13,6 +13,13 @@ class HarrakaApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context,WidgetRef ref) {
     final config = ref.watch(appConfigProvider);
+    // Future<void> registerDevice() async {
+    //   final device = await ref.read(deviceInfoProvider.future);
+    //
+    //   print(device.platform);
+    //   print(device.model);
+    // }
+    // registerDevice();
     return MaterialApp(
       title: AppStrings.appName,
       debugShowCheckedModeBanner: false,
@@ -22,3 +29,4 @@ class HarrakaApp extends ConsumerWidget {
     );
   }
 }
+

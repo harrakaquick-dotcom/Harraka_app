@@ -29,7 +29,7 @@ class _LoginWithNumberScreenState extends State<LoginWithNumberScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return  GestureDetector(
+    return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         backgroundColor: AppColors.background,
@@ -54,6 +54,17 @@ class _LoginWithNumberScreenState extends State<LoginWithNumberScreen> {
                           controller: _phoneController,
                           labelText: 'Mobile Number',
                           validator: NumberValidator.validate,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          spacing: 10,
+                          children: [
+                            AuthText(
+                              helperText: "Continue with email  ",
+                              text: "Email",
+                              routeName: RouteNames.login,
+                            ),
+                          ],
                         ),
                         AppGradientButton(
                           label: 'Continue',
