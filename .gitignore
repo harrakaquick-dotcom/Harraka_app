@@ -48,3 +48,8 @@ app.*.map.json
 # distribution related
 
 /android/app/google-services.json
+
+
+#env
+
+.env

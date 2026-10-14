@@ -5,6 +5,7 @@ class RouteNames {
   static const String splash = '/';
   static const String onboarding = '/onboarding';
   static const String login = '/login';
+  static const String loginWithNumber = '/login-number';
   static const String signup = '/signup';
   static const String otpVerification = '/otp-verification';
   static const String home = '/home';

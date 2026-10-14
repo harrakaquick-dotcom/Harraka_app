@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:harraka/features/auth/presentation/screens/login_with_number_screen.dart';
 import 'package:harraka/features/auth/presentation/screens/signup_screen.dart';
 import '../../features/addresses/presentation/screens/select_address_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
@@ -31,6 +32,8 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const OnboardingScreen());
       case RouteNames.login:
         return MaterialPageRoute(builder: (_) => const LoginScreen());
+      case RouteNames.loginWithNumber:
+        return MaterialPageRoute(builder: (_) => const LoginWithNumberScreen());
       case RouteNames.signup:
         return MaterialPageRoute(builder: (_)=> const SignupScreen());
       case RouteNames.otpVerification:
