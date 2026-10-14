@@ -3,7 +3,9 @@
 class ApiEndpoints {
   ApiEndpoints._();
 
-  static const String login = '/auth/login';
+  // static const String login = '/auth/login';
+  static const String otpSend = 'auth/otp/send';
+  static const String otpEmail = 'auth/otp-email/send';
   static const String otpVerify = '/auth/otp/verify';
   static const String home = '/home';
   static const String categories = '/categories';

@@ -1,24 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:harraka/core/constants/app_text_styles.dart';
 import 'package:harraka/core/routing/route_names.dart';
 import 'package:harraka/core/utils/validator/email_validator.dart';
 import 'package:harraka/core/widgets/app_Gradient_button.dart';
 import 'package:harraka/core/widgets/app_text_field.dart';
+import 'package:harraka/features/auth/data/models/user_model.dart';
 import 'package:harraka/features/auth/presentation/widgets/auth_button.dart';
 import 'package:harraka/features/auth/presentation/widgets/auth_text.dart';
 import 'package:harraka/features/auth/presentation/widgets/divider_text.dart';
 import 'package:harraka/features/auth/presentation/widgets/login_header.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_spacing.dart';
+import '../providers/auth_provider.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
 
@@ -26,6 +29,16 @@ class _LoginScreenState extends State<LoginScreen> {
   void dispose() {
     _emailController.dispose();
     super.dispose();
+  }
+
+  Future<OtpEmail> login({required String email}) async {
+    final repository = ref.read(authRepositoryProvider);
+
+    final res = await repository.login(email);
+
+    print("login response  = $res");
+
+    return res;
   }
 
   @override
@@ -78,12 +91,18 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         AppGradientButton(
                           label: 'Continue',
-                          onPressed: () {
+                          onPressed: () async {
                             if (_formKey.currentState!.validate()) {
-                              Navigator.of(context).pushNamed(
-                                RouteNames.otpVerification,
-                                arguments: _emailController.text.trim(),
-                              );
+                              final email = _emailController.text.trim();
+                              // Call the login method
+                              final res = await login(email: email);
+
+                              if (mounted) {
+                                Navigator.of(context).pushNamed(
+                                  RouteNames.otpVerification,
+                                  arguments: email,
+                                );
+                              }
                             }
                           },
                         ),

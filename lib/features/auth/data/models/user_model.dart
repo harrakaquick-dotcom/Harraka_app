@@ -1,3 +1,5 @@
+import 'dart:async';
+
 class UserModel {
   final String username;
   final int phoneNumber;
@@ -18,5 +20,16 @@ class UserModel {
       phoneNumber: json['phone'],
       deviceID: json['device_id'],
     );
+  }
+}
+
+class OtpEmail {
+  final String otp;
+  final bool success;
+
+  OtpEmail({required this.otp, required this.success});
+
+  factory OtpEmail.fromJson(dynamic json) {
+    return OtpEmail(success: json['success'], otp: json['message']);
   }
 }
