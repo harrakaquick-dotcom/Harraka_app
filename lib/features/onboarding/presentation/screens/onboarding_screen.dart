@@ -22,21 +22,21 @@ class _OnboardingPageData {
 
 const _pages = [
   _OnboardingPageData(
-    imageAsset: 'assets/images/splash/onboarding_rider.png',
+    imageAsset: 'assets/images/splash/onboarding_1.png',
     title: 'Ten minutes. That is the whole promise.',
     description:
         'Dark stores across your city keep 4,000 everyday items two streets away from you.',
     buttonLabel: 'Next',
   ),
   _OnboardingPageData(
-    imageAsset: 'assets/images/splash/onboarding_produce.png',
+    imageAsset: 'assets/images/splash/onboarding_2.png',
     title: 'Fresh picked twice a day',
     description:
         'Fruit, veg and dairy arrive at the store each morning and evening. Nothing sits overnight.',
     buttonLabel: 'Next',
   ),
   _OnboardingPageData(
-    imageAsset: 'assets/images/splash/onboarding_tracking.png',
+    imageAsset: 'assets/images/splash/onboarding_3.png',
     title: 'Watch it come to your door',
     description:
         'Live rider tracking, contactless drop and refunds settled within 24 hours.',
