@@ -15,7 +15,19 @@ class AuthRepositoriesImpl {
     return OtpEmail.fromJson(response.data);
   }
 
-  Future otpVerify(String email) async{
-    
+  Future<VerifyOtp> verifyOtp({String? phone, String? email,required String otp}) async {
+    final response = await apiClient.dio.post(
+      ApiEndpoints.otpVerify,
+      data: {
+        if (phone != null && phone.isNotEmpty) "phone": phone,
+        if (email != null && email.isNotEmpty) "email": email,
+        "otp": otp,
+        "device_id": "unknown",
+      }
+    );
+
+    print("Response = ${response.data}");
+
+    return VerifyOtp.fromJson(response.data);
   }
 }

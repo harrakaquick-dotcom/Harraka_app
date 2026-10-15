@@ -3,8 +3,11 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:harraka/core/constants/app_strings.dart';
 import 'package:harraka/core/widgets/app_back_button.dart';
+import 'package:harraka/features/auth/data/models/user_model.dart';
+import 'package:harraka/features/auth/presentation/providers/auth_provider.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_text_styles.dart';
@@ -15,17 +18,17 @@ import '../widgets/otp_box_field.dart';
 const _otpLength = 4;
 const _resendSeconds = 60;
 
-class OtpScreen extends StatefulWidget {
+class OtpScreen extends ConsumerStatefulWidget {
   const OtpScreen({super.key, required this.phoneNumber, required this.otp});
 
   final String phoneNumber;
   final String otp;
 
   @override
-  State<OtpScreen> createState() => _OtpScreenState();
+  ConsumerState<OtpScreen> createState() => _OtpScreenState();
 }
 
-class _OtpScreenState extends State<OtpScreen> {
+class _OtpScreenState extends ConsumerState<OtpScreen> {
   final _controllers = List.generate(
     _otpLength,
     (_) => TextEditingController(),
@@ -34,6 +37,17 @@ class _OtpScreenState extends State<OtpScreen> {
 
   Timer? _resendTimer;
   int _secondsLeft = _resendSeconds;
+
+  Future<VerifyOtp> otpVerify(String provider, String otp) async {
+    final repository = ref.read(authRepositoryProvider);
+    final VerifyOtp res;
+    if (provider.contains('@')) {
+      res = await repository.verifyOtp(email: provider, otp: otp);
+    } else {
+      res = await repository.verifyOtp(phone: provider, otp: otp);
+    }
+    return res;
+  }
 
   @override
   void initState() {
@@ -79,6 +93,9 @@ class _OtpScreenState extends State<OtpScreen> {
   }
 
   bool get _isComplete => _controllers.every((c) => c.text.isNotEmpty);
+
+  /// Digits actually typed/pasted by the user across all boxes.
+  String get _enteredOtp => _controllers.map((c) => c.text).join();
 
   /// System-keyboard entry: auto-advance on digit, auto-back on delete.
   /// Multi-digit input (long-press paste / SMS autofill) is distributed
@@ -135,11 +152,25 @@ class _OtpScreenState extends State<OtpScreen> {
     FocusScope.of(context).requestFocus(_focusNodes.first);
   }
 
-  void _verify() {
+  void _verify(String otp) async {
     if (!_isComplete) return;
     FocusScope.of(context).unfocus();
     TextInput.finishAutofillContext();
-    Navigator.of(context).pushReplacementNamed(RouteNames.addresses);
+
+    try {
+      final response = await otpVerify(widget.phoneNumber, otp);
+
+      print('is new user ${response.isNewUser}');
+      print('access token ${response.accessToken}');
+      print('refresh token ${response.refreshToken}');
+
+      if (!mounted) return;
+
+      Navigator.of(context).pushReplacementNamed(RouteNames.addresses);
+    } catch (e, stackTrace) {
+      print("Error : $e");
+      print(stackTrace);
+    }
   }
 
   String get _maskedPhone {
@@ -252,7 +283,13 @@ class _OtpScreenState extends State<OtpScreen> {
                 const SizedBox(height: AppSpacing.sm),
                 AppGradientButton(
                   label: 'Verify & continue',
-                  onPressed: _isComplete ? _verify : null,
+                  onPressed: _isComplete
+                      ? () {
+                          final String otpText = _enteredOtp;
+                          print("Otp = $otpText");
+                          _verify(otpText);
+                        }
+                      : null,
                 ),
                 const SizedBox(height: AppSpacing.lg),
               ],

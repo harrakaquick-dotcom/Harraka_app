@@ -28,13 +28,36 @@ class OtpEmail {
   final bool success;
   final String otp;
 
-  OtpEmail({required this.message, required this.success,required this.otp});
+  OtpEmail({required this.message, required this.success, required this.otp});
 
   factory OtpEmail.fromJson(Map<String, dynamic> json) {
     return OtpEmail(
       success: json['success'] as bool,
       message: json['message'] as String,
-      otp : json['otp'] as String,
+      otp: json['otp'] as String,
+    );
+  }
+}
+
+class VerifyOtp {
+  final bool isNewUser;
+  final String accessToken;
+  final String refreshToken;
+  final String tokenType;
+
+  VerifyOtp({
+    required this.isNewUser,
+    required this.accessToken,
+    required this.refreshToken,
+    required this.tokenType,
+  });
+
+  factory VerifyOtp.fromJson(Map<String, dynamic> json) {
+    return VerifyOtp(
+      isNewUser: json['is_new_user'] as bool,
+      accessToken: json['access_token'] as String? ?? '',
+      refreshToken: json['refresh_token'] as String? ?? '',
+      tokenType: json["token_type"] as String,
     );
   }
 }
