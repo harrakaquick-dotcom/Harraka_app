@@ -37,8 +37,11 @@ class AppRouter {
       case RouteNames.signup:
         return MaterialPageRoute(builder: (_)=> const SignupScreen());
       case RouteNames.otpVerification:
-        final phoneNumber = settings.arguments as String? ?? '';
-        return MaterialPageRoute(builder: (_) => OtpScreen(phoneNumber: phoneNumber));
+        final args = settings.arguments as List?;
+
+        final phoneNumber = args?[0] as String? ?? '';
+        final otp = args?[1] as String? ?? '';
+        return MaterialPageRoute(builder: (_) => OtpScreen(phoneNumber: phoneNumber,otp: otp));
       case RouteNames.addresses:
         return MaterialPageRoute(builder: (_) => const SelectAddressScreen());
       case RouteNames.home:

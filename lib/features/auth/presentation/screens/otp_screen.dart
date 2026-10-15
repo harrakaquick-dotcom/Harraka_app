@@ -13,9 +13,10 @@ const _otpLength = 4;
 const _resendSeconds = 30;
 
 class OtpScreen extends StatefulWidget {
-  const OtpScreen({super.key, required this.phoneNumber});
+  const OtpScreen({super.key, required this.phoneNumber,required this.otp});
 
   final String phoneNumber;
+  final String otp;
 
   @override
   State<OtpScreen> createState() => _OtpScreenState();
@@ -141,36 +142,36 @@ class _OtpScreenState extends State<OtpScreen> {
                   );
                 }),
               ),
-              const SizedBox(height: AppSpacing.sm),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  GestureDetector(
-                    onTap: _secondsLeft == 0 ? _startResendTimer : null,
-                    child: Text(
-                      _secondsLeft > 0
-                          ? 'Resend code in 0:${_secondsLeft.toString().padLeft(2, '0')}'
-                          : 'Resend code',
-                      style: AppTextStyles.caption.copyWith(
-                        color: _secondsLeft > 0 ? AppColors.textSecondary : AppColors.primary,
-                        fontWeight: _secondsLeft > 0 ? FontWeight.normal : FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: _clear,
-                    child: Text(
-                      'Clear',
-                      style: AppTextStyles.caption.copyWith(
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const Spacer(),
-              OtpKeypad(onKeyTap: _onKeyTap, onBackspace: _onBackspace),
+              // const SizedBox(height: AppSpacing.sm),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //   children: [
+              //     GestureDetector(
+              //       onTap: _secondsLeft == 0 ? _startResendTimer : null,
+              //       child: Text(
+              //         _secondsLeft > 0
+              //             ? 'Resend code in 0:${_secondsLeft.toString().padLeft(2, '0')}'
+              //             : 'Resend code',
+              //         style: AppTextStyles.caption.copyWith(
+              //           color: _secondsLeft > 0 ? AppColors.textSecondary : AppColors.primary,
+              //           fontWeight: _secondsLeft > 0 ? FontWeight.normal : FontWeight.w600,
+              //         ),
+              //       ),
+              //     ),
+              //     GestureDetector(
+              //       onTap: _clear,
+              //       child: Text(
+              //         'Clear',
+              //         style: AppTextStyles.caption.copyWith(
+              //           color: AppColors.primary,
+              //           fontWeight: FontWeight.w600,
+              //         ),
+              //       ),
+              //     ),
+              //   ],
+              // ),
+              // const Spacer(),
+              // OtpKeypad(onKeyTap: _onKeyTap, onBackspace: _onBackspace),
               const SizedBox(height: AppSpacing.lg),
               AppGradientButton(
                 label: 'Verify & continue',

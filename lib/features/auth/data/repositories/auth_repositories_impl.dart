@@ -8,10 +8,14 @@ class AuthRepositoriesImpl {
   AuthRepositoriesImpl(this.apiClient);
 
   Future<OtpEmail> login(String email) async {
-    final response = apiClient.dio.post(
+    final response = await apiClient.dio.post(
       ApiEndpoints.otpEmail,
       data: {"email": email},
     );
-    return OtpEmail.fromJson(response);
+    return OtpEmail.fromJson(response.data);
+  }
+
+  Future otpVerify(String email) async{
+    
   }
 }

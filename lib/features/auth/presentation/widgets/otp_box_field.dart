@@ -28,6 +28,7 @@ class OtpBoxField extends StatelessWidget {
         focusNode: focusNode,
         readOnly: true,
         showCursor: false,
+        keyboardType: TextInputType.number,
         textAlign: TextAlign.center,
         style: AppTextStyles.headingLarge,
         decoration: InputDecoration(

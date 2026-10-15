@@ -24,12 +24,17 @@ class UserModel {
 }
 
 class OtpEmail {
-  final String otp;
+  final String message;
   final bool success;
+  final String otp;
 
-  OtpEmail({required this.otp, required this.success});
+  OtpEmail({required this.message, required this.success,required this.otp});
 
-  factory OtpEmail.fromJson(dynamic json) {
-    return OtpEmail(success: json['success'], otp: json['message']);
+  factory OtpEmail.fromJson(Map<String, dynamic> json) {
+    return OtpEmail(
+      success: json['success'] as bool,
+      message: json['message'] as String,
+      otp : json['otp'] as String,
+    );
   }
 }

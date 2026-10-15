@@ -33,11 +33,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   Future<OtpEmail> login({required String email}) async {
     final repository = ref.read(authRepositoryProvider);
-
     final res = await repository.login(email);
-
-    print("login response  = $res");
-
     return res;
   }
 
@@ -94,17 +90,38 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           onPressed: () async {
                             if (_formKey.currentState!.validate()) {
                               final email = _emailController.text.trim();
-                              // Call the login method
-                              final res = await login(email: email);
 
-                              if (mounted) {
+                              try {
+                                final res = await login(email: email);
+
+                                print('3. Response: ${res.message}');
+
+                                if (!mounted) return;
+
                                 Navigator.of(context).pushNamed(
                                   RouteNames.otpVerification,
-                                  arguments: email,
+                                  arguments: [email,res.otp],
                                 );
+                              } catch (e, stackTrace) {
+                                print('LOGIN ERROR: $e');
+                                print(stackTrace);
                               }
                             }
                           },
+                          // onPressed: () async {
+                          //   if (_formKey.currentState!.validate()) {
+                          //     final email = _emailController.text.trim();
+                          //     // Call the login method
+                          //     final res = await login(email: email);
+                          //
+                          //     if (mounted) {
+                          //       Navigator.of(context).pushNamed(
+                          //         RouteNames.otpVerification,
+                          //         arguments: email,
+                          //       );
+                          //     }
+                          //   }
+                          // },
                         ),
                         DividerText(text: 'OR'),
                         AuthButton(

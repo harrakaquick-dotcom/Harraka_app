@@ -61,7 +61,7 @@ void main() {
     tester,
   ) async {
     await tester.pumpWidget(
-      const MaterialApp(home: OtpScreen(phoneNumber: '9876543210')),
+      const MaterialApp(home: OtpScreen(phoneNumber: '9876543210',otp: '2342',)),
     );
     await tester.pump();
 
