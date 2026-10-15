@@ -1,36 +1,55 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_text_styles.dart';
 
-/// A single digit box in an OTP entry row. Purely presentational — the
-/// caller drives its content and focus (see `OtpScreen` + `OtpKeypad`);
-/// this widget never receives text input directly.
+/// Single digit box in the OTP entry row.
+///
+/// Works with the system keyboard: accepts one numeric digit, auto-advances
+/// via [onChanged], and reports backspace-to-previous through the same
+/// callback (empty value => move focus back).
 class OtpBoxField extends StatelessWidget {
   const OtpBoxField({
     super.key,
     required this.controller,
     required this.focusNode,
     required this.filled,
+    required this.autofocus,
+    required this.onChanged,
+    required this.textInputAction,
   });
 
   final TextEditingController controller;
   final FocusNode focusNode;
   final bool filled;
+  final bool autofocus;
+  final ValueChanged<String> onChanged;
+  final TextInputAction textInputAction;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: 64,
-      height: 64,
+      height: 68,
       child: TextField(
         controller: controller,
         focusNode: focusNode,
-        readOnly: true,
-        showCursor: false,
+        autofocus: autofocus,
         keyboardType: TextInputType.number,
+        textInputAction: textInputAction,
         textAlign: TextAlign.center,
-        style: AppTextStyles.headingLarge,
+        cursorColor: AppColors.primary,
+        cursorWidth: 2,
+        showCursor: true,
+        maxLength: 1,
+        buildCounter: (_, {required currentLength, maxLength, required isFocused}) =>
+            const SizedBox.shrink(),
+        inputFormatters: [
+          FilteringTextInputFormatter.digitsOnly,
+          LengthLimitingTextInputFormatter(1),
+        ],
+        style: AppTextStyles.headingLarge.copyWith(fontSize: 24),
         decoration: InputDecoration(
           counterText: '',
           filled: true,
@@ -42,13 +61,22 @@ class OtpBoxField extends StatelessWidget {
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(AppRadius.medium),
-            borderSide: const BorderSide(color: AppColors.border),
+            borderSide: BorderSide(
+              color: filled ? AppColors.primary.withValues(alpha: 0.4) : AppColors.border,
+            ),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(AppRadius.medium),
-            borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+            borderSide: const BorderSide(color: AppColors.primary, width: 1.8),
           ),
         ),
+        onChanged: onChanged,
+        onTap: () {
+          // Place cursor at end so re-tapping a filled box replaces cleanly.
+          controller.selection = TextSelection.collapsed(
+            offset: controller.text.length,
+          );
+        },
       ),
     );
   }

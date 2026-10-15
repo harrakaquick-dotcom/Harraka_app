@@ -7,13 +7,12 @@ import '../../../../core/constants/app_text_styles.dart';
 import '../../../../core/routing/route_names.dart';
 import '../../../../core/widgets/app_Gradient_button.dart';
 import '../widgets/otp_box_field.dart';
-import '../widgets/otp_keypad.dart';
 
 const _otpLength = 4;
-const _resendSeconds = 30;
+const _resendSeconds = 60;
 
 class OtpScreen extends StatefulWidget {
-  const OtpScreen({super.key, required this.phoneNumber,required this.otp});
+  const OtpScreen({super.key, required this.phoneNumber, required this.otp});
 
   final String phoneNumber;
   final String otp;
@@ -32,8 +31,13 @@ class _OtpScreenState extends State<OtpScreen> {
   @override
   void initState() {
     super.initState();
-    _focusNodes.first.requestFocus();
     _startResendTimer();
+    // Focus must be requested after the first frame — calling requestFocus()
+    // directly in initState is unreliable (focus tree not attached yet).
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      FocusScope.of(context).requestFocus(_focusNodes.first);
+    });
   }
 
   @override
@@ -50,8 +54,12 @@ class _OtpScreenState extends State<OtpScreen> {
 
   void _startResendTimer() {
     _resendTimer?.cancel();
-    setState(() => _secondsLeft = _resendSeconds);
+    _secondsLeft = _resendSeconds;
     _resendTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
       if (_secondsLeft <= 1) {
         timer.cancel();
         setState(() => _secondsLeft = 0);
@@ -59,48 +67,45 @@ class _OtpScreenState extends State<OtpScreen> {
       }
       setState(() => _secondsLeft--);
     });
-  }
-
-  int get _activeIndex {
-    final firstEmpty = _controllers.indexWhere((c) => c.text.isEmpty);
-    return firstEmpty == -1 ? _otpLength - 1 : firstEmpty;
+    // Refresh "Resend code in 1:00" label immediately on manual resend.
+    if (mounted) setState(() {});
   }
 
   bool get _isComplete => _controllers.every((c) => c.text.isNotEmpty);
 
-  void _onKeyTap(String digit) {
-    final index = _activeIndex;
-    if (_isComplete) return;
-
-    setState(() => _controllers[index].text = digit);
-
-    if (index < _otpLength - 1) {
-      _focusNodes[index + 1].requestFocus();
+  /// System-keyboard entry: auto-advance on digit, auto-back on delete.
+  void _onChanged(String value, int index) {
+    // Guard against paste/autofill dumping >1 char into a single box.
+    if (value.length > 1) {
+      final last = value.characters.last;
+      _controllers[index].text = last;
+      _controllers[index].selection = const TextSelection.collapsed(offset: 1);
+      value = last;
     }
-  }
 
-  void _onBackspace() {
-    var index = _focusNodes.indexWhere((node) => node.hasFocus);
-    if (index == -1) index = _activeIndex;
-
-    if (_controllers[index].text.isEmpty && index > 0) {
-      index--;
-      _focusNodes[index].requestFocus();
+    if (value.isNotEmpty) {
+      if (index < _otpLength - 1) {
+        FocusScope.of(context).requestFocus(_focusNodes[index + 1]);
+      } else {
+        _focusNodes[index].unfocus();
+      }
+    } else if (index > 0) {
+      FocusScope.of(context).requestFocus(_focusNodes[index - 1]);
     }
-    setState(() => _controllers[index].text = '');
+    setState(() {});
   }
 
   void _clear() {
-    setState(() {
-      for (final controller in _controllers) {
-        controller.clear();
-      }
-    });
-    _focusNodes.first.requestFocus();
+    for (final controller in _controllers) {
+      controller.clear();
+    }
+    setState(() {});
+    FocusScope.of(context).requestFocus(_focusNodes.first);
   }
 
   void _verify() {
     if (!_isComplete) return;
+    FocusScope.of(context).unfocus();
     Navigator.of(context).pushReplacementNamed(RouteNames.addresses);
   }
 
@@ -110,75 +115,123 @@ class _OtpScreenState extends State<OtpScreen> {
     return '${phone.substring(0, 2)}••• ••${phone.substring(phone.length - 3)}';
   }
 
+  String get _resendLabel => _secondsLeft > 0
+      ? 'Resend code in 0:${_secondsLeft.toString().padLeft(2, '0')}'
+      : 'Resend code';
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: AppSpacing.lg),
-              Text('Verify your number', style: AppTextStyles.headingLarge),
-              const SizedBox(height: AppSpacing.xs),
-              Text(
-                'We sent a $_otpLength-digit code to +91 $_maskedPhone',
-                style: AppTextStyles.bodyMedium,
-              ),
-              const SizedBox(height: AppSpacing.xl),
-              Row(
-                children: List.generate(_otpLength, (index) {
-                  return Padding(
-                    padding: EdgeInsets.only(
-                      right: index == _otpLength - 1 ? 0 : AppSpacing.sm,
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(height: AppSpacing.sm),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: IconButton(
+                    onPressed: () => Navigator.of(context).maybePop(),
+                    icon: const Icon(Icons.arrow_back_rounded),
+                    color: AppColors.textPrimary,
+                    style: IconButton.styleFrom(
+                      backgroundColor: AppColors.surface,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(AppRadius.medium),
+                      ),
                     ),
-                    child: OtpBoxField(
-                      controller: _controllers[index],
-                      focusNode: _focusNodes[index],
-                      filled: _controllers[index].text.isNotEmpty,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.md),
+                Container(
+                  width: 72,
+                  height: 72,
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryLight,
+                    borderRadius: BorderRadius.circular(AppRadius.large),
+                  ),
+                  child: const Icon(
+                    Icons.mark_chat_read_outlined,
+                    color: AppColors.primary,
+                    size: 34,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.md),
+                Text('Verify your number', style: AppTextStyles.headingLarge),
+                const SizedBox(height: AppSpacing.xs),
+                Text(
+                  'We sent a $_otpLength-digit code to +91 $_maskedPhone',
+                  style: AppTextStyles.bodyMedium,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: AppSpacing.xl),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(_otpLength, (index) {
+                    return Padding(
+                      padding: EdgeInsets.only(
+                        right: index == _otpLength - 1 ? 0 : AppSpacing.sm,
+                      ),
+                      child: OtpBoxField(
+                        controller: _controllers[index],
+                        focusNode: _focusNodes[index],
+                        filled: _controllers[index].text.isNotEmpty,
+                        autofocus: index == 0,
+                        textInputAction: index == _otpLength - 1
+                            ? TextInputAction.done
+                            : TextInputAction.next,
+                        onChanged: (value) => _onChanged(value, index),
+                      ),
+                    );
+                  }),
+                ),
+                const SizedBox(height: AppSpacing.md),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    GestureDetector(
+                      onTap: _secondsLeft == 0 ? _startResendTimer : null,
+                      child: Text(
+                        _resendLabel,
+                        style: AppTextStyles.caption.copyWith(
+                          color: _secondsLeft > 0
+                              ? AppColors.textSecondary
+                              : AppColors.primary,
+                          fontWeight: _secondsLeft > 0
+                              ? FontWeight.normal
+                              : FontWeight.w600,
+                        ),
+                      ),
                     ),
-                  );
-                }),
-              ),
-              // const SizedBox(height: AppSpacing.sm),
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //   children: [
-              //     GestureDetector(
-              //       onTap: _secondsLeft == 0 ? _startResendTimer : null,
-              //       child: Text(
-              //         _secondsLeft > 0
-              //             ? 'Resend code in 0:${_secondsLeft.toString().padLeft(2, '0')}'
-              //             : 'Resend code',
-              //         style: AppTextStyles.caption.copyWith(
-              //           color: _secondsLeft > 0 ? AppColors.textSecondary : AppColors.primary,
-              //           fontWeight: _secondsLeft > 0 ? FontWeight.normal : FontWeight.w600,
-              //         ),
-              //       ),
-              //     ),
-              //     GestureDetector(
-              //       onTap: _clear,
-              //       child: Text(
-              //         'Clear',
-              //         style: AppTextStyles.caption.copyWith(
-              //           color: AppColors.primary,
-              //           fontWeight: FontWeight.w600,
-              //         ),
-              //       ),
-              //     ),
-              //   ],
-              // ),
-              // const Spacer(),
-              // OtpKeypad(onKeyTap: _onKeyTap, onBackspace: _onBackspace),
-              const SizedBox(height: AppSpacing.lg),
-              AppGradientButton(
-                label: 'Verify & continue',
-                onPressed: _isComplete ? _verify : null,
-              ),
-              const SizedBox(height: AppSpacing.lg),
-            ],
+                    GestureDetector(
+                      onTap: _clear,
+                      child: Text(
+                        'Clear',
+                        style: AppTextStyles.caption.copyWith(
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const Spacer(),
+                Text(
+                  '${_controllers.where((c) => c.text.isNotEmpty).length}/$_otpLength digits entered',
+                  style: AppTextStyles.caption,
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                AppGradientButton(
+                  label: 'Verify & continue',
+                  onPressed: _isComplete ? _verify : null,
+                ),
+                const SizedBox(height: AppSpacing.lg),
+              ],
+            ),
           ),
         ),
       ),
