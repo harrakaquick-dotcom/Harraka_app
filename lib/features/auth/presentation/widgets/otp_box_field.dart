@@ -42,13 +42,11 @@ class OtpBoxField extends StatelessWidget {
         cursorColor: AppColors.primary,
         cursorWidth: 2,
         showCursor: true,
-        maxLength: 1,
-        buildCounter: (_, {required currentLength, maxLength, required isFocused}) =>
-            const SizedBox.shrink(),
-        inputFormatters: [
-          FilteringTextInputFormatter.digitsOnly,
-          LengthLimitingTextInputFormatter(1),
-        ],
+        // NOTE: no maxLength / LengthLimiting here on purpose — paste of the
+        // full code must reach onChanged so the screen can distribute digits
+        // across boxes. Single-char limit is enforced in _onChanged instead.
+        autofillHints: const [AutofillHints.oneTimeCode],
+        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         style: AppTextStyles.headingLarge.copyWith(fontSize: 24),
         decoration: InputDecoration(
           counterText: '',

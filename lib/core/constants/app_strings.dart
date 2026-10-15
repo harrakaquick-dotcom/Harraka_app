@@ -4,4 +4,5 @@ class AppStrings {
   AppStrings._();
 
   static const String appName = 'Harraka';
+  static const String countryCode = '+256';
 }

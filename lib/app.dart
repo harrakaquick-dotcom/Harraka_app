@@ -11,7 +11,7 @@ class HarrakaApp extends ConsumerWidget {
   const HarrakaApp({super.key});
 
   @override
-  Widget build(BuildContext context,WidgetRef ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watch(appConfigProvider);
     // Future<void> registerDevice() async {
     //   final device = await ref.read(deviceInfoProvider.future);
@@ -26,7 +26,13 @@ class HarrakaApp extends ConsumerWidget {
       theme: AppTheme.lightTheme,
       initialRoute: RouteNames.splash,
       onGenerateRoute: AppRouter.onGenerateRoute,
+      builder: (context, child) => config.isProd
+          ? child!
+          : Banner(
+              message: config.environment.label.toUpperCase(),
+              location: BannerLocation.topEnd,
+              child: child,
+            ),
     );
   }
 }
-
